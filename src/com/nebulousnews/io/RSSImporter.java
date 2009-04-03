@@ -2,9 +2,10 @@ package com.nebulousnews.io;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.nebulousnews.feed.Article;
 
@@ -15,11 +16,21 @@ import de.nava.informa.impl.basic.ChannelBuilder;
 import de.nava.informa.parsers.FeedParser;
 
 public class RSSImporter implements Importer {
-	Article[] articles;
+	ArrayList<Article> articles;
+	String url;
 	public RSSImporter(String url) {
-		ArrayList<Article> articlesList = new ArrayList<Article>();
+		this.url = url;
+		articles = new ArrayList<Article>();
+	}
+
+	@Override
+	public Article[] getArticles() {
+		return articles.toArray(new Article[articles.size()]);
+	}
+	
+	public void loadArticles() {
 		try {
-			URL feed = new URL(url);
+			URL feed = new URL(this.url);
 			ChannelIF channel = FeedParser.parse(new ChannelBuilder(), feed);
 			
 			for (Iterator<ItemIF> iter = channel.getItems().iterator(); iter.hasNext();) {
@@ -28,23 +39,30 @@ public class RSSImporter implements Importer {
 				if (item.getGuid() != null && !"".equals(item.getGuid().toString())) {
 					temp.setGUID(item.getGuid().toString());
 				}
-				
-				articlesList.add(temp);
+				Map<String, String> enclosures = new HashMap<String, String>();
+				if (!("".equals(item.getElementValue("media:text")))) {
+					enclosures.put("html", item.getElementValue("media:text"));
+				}
+				String[] mediaContentValues = item.getElementValues("media:content", new String[] {});
+				String[] mediaContentAttributes = item.getAttributeValues("media:content", new String[] {});
+				if (mediaContentValues != null && mediaContentValues.length > 0) {
+					
+				}
+				temp.setEnclosures(enclosures);
+				System.out.println("adding "+temp.getTitle());
+				this.articles.add(temp);
+				break;
 			}
-			
-			this.articles = articlesList.toArray(new Article[articlesList.size()]);
 		} catch (MalformedURLException ex) {
 			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		} catch (UnsupportedFormatException ex) {
 			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
+			ex.printStackTrace();
 		}
-	}
-
-	@Override
-	public Article[] getArticles() {
-		return articles;
 	}
 	
 }
