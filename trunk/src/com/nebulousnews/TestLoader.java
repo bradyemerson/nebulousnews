@@ -18,7 +18,9 @@ public class TestLoader {
 			FileInputStream underlyingStream = new FileInputStream("articles.news");
 			ObjectInputStream serializer = new ObjectInputStream(underlyingStream);
 			Article[] articles = (Article[]) serializer.readObject();
-			System.out.println(Arrays.toString(articles));
+			for (Article article: articles) {
+				System.out.println(article.toString());
+			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
