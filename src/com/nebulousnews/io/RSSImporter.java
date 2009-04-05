@@ -49,9 +49,7 @@ public class RSSImporter implements Importer {
 					
 				}
 				temp.setEnclosures(enclosures);
-				System.out.println("adding "+temp.getTitle());
 				this.articles.add(temp);
-				break;
 			}
 		} catch (MalformedURLException ex) {
 			System.err.println(ex.getMessage());
