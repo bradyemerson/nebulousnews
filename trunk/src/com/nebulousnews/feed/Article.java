@@ -3,6 +3,7 @@
  */
 package com.nebulousnews.feed;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
@@ -12,7 +13,8 @@ import com.clearforest.calais.full.Entities;
  * @author Brady
  *
  */
-public class Article {
+public class Article implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private String title, link, description, guid;
 	private Date pubdate;
 	private Entities tags;

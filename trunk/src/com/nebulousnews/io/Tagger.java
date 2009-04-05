@@ -14,7 +14,7 @@ public class Tagger {
 	}
 	
 	public static void tagArticle(Article article) {
-		System.out.println("sending "+article.getCalaisTest());
+		//System.out.println("sending "+article.getCalaisTest());
 		jsonIf.getFullJSON(article.getCalaisTest());
 		Entities entities = jsonIf.getEntities();
 		article.setTags(entities);

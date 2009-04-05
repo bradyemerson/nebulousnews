@@ -36,6 +36,7 @@
  */
 package com.clearforest.calais.full;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,8 +48,8 @@ import com.clearforest.calais.common.JSONUtils;
  * return its content in JSON format
  *
  */
-public class Entities {
-
+public class Entities implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private HashMap<String,String> 				m_pluralMap 	= null; 
 		// map to get plural form of known entities
 	private HashMap<String,ArrayList<Entity>> 	m_entitiesMap 	= null;

@@ -36,6 +36,8 @@
  */
 package com.clearforest.calais.full;
 
+import java.io.Serializable;
+
 import com.clearforest.calais.common.JSONUtils;
 
 
@@ -43,8 +45,8 @@ import com.clearforest.calais.common.JSONUtils;
  * A class that represents a single entity identified by
  * Calais and can return itself in JSON format
  */
-public class Entity extends IdentifiedElement {
-	
+public class Entity extends IdentifiedElement implements Serializable  {
+	private static final long serialVersionUID = 1L;
 	private String 				m_name 		= null;
 	private float				m_relevance	= 0.0F;
 	
