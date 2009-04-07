@@ -1,15 +1,16 @@
 package com.nebulousnews.users;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class UserTags {
 
-	private Map<String, Double> tags;
+	private Map<String, Double> tags = new HashMap<String, Double>();
 	private Double increment = 1.0;
 	private Double decrement = -1.0;
 	
 	public UserTags(){
-		this.tags.clear();
+		this.tags.put("blank",0.0);
 	}
 	public UserTags(String tag, Double rating){
 		this.tags.put(tag,rating);
@@ -46,6 +47,6 @@ public class UserTags {
 	}
 	
 	public String toString(){
-		return "User Tags: " + this.tags.toString();
+		return "User Tags: " + this.tags.toString() + " ";
 	}
 }
