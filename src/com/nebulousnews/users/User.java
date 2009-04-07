@@ -1,10 +1,11 @@
 package com.nebulousnews.users;
 
-public class User {
+public class User extends UserTags{
 
 	private String firstName, lastName, UID, password;
 	
 	public User(){
+		super("blank",0.0);
 		this.firstName = "blank";
 		this.lastName = "blank";
 		this.UID = "blank";
