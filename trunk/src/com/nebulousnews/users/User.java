@@ -5,7 +5,7 @@ public class User extends UserTags{
 	private String firstName, lastName, UID, password;
 	
 	public User(){
-		super("blank",0.0);
+		super();
 		this.firstName = "blank";
 		this.lastName = "blank";
 		this.UID = "blank";
@@ -17,6 +17,14 @@ public class User extends UserTags{
 		this.lastName = lastName;
 		this.UID = UID;
 		this.password = password;
+	}
+	
+	public User(String firstName, String lastName, String UID, String password, String tag, Double rating){
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.UID = UID;
+		this.password = password;
+		super.addUserTags(tag, rating);
 	}
 	
 	public void setFirstName(String firstName){
@@ -58,6 +66,7 @@ public class User extends UserTags{
 		sb.append("First Name: " + this.firstName + " ");
 		sb.append("Last Name: " + this.lastName + " ");
 		sb.append("Password: " + this.password + " ");
+		sb.append(super.toString() + "\n");
 		
 		return sb.toString();
 	}
