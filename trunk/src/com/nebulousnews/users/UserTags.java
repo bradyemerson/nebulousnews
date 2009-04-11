@@ -46,6 +46,10 @@ public class UserTags {
 		this.decrement = decrement;
 	}
 	
+	public Map<String, Double> getUserTags(){
+		return this.tags;
+	}
+	
 	public String toString(){
 		return "User Tags: " + this.tags.toString() + " ";
 	}
