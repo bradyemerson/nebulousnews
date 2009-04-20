@@ -288,4 +288,8 @@ public class Entities implements Serializable{
 	public String toString() {
 		return m_entitiesMap.toString();
 	}
+	
+	public ArrayList<ArrayList<Entity>> getEntitiesList(){
+		return m_entitiesList;
+	}
 }
