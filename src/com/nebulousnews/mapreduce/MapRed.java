@@ -25,6 +25,10 @@ import org.apache.hadoop.mapred.TextOutputFormat;
 
 import com.nebulousnews.users.User;
 
+/*
+ * @author Jason
+ * 
+ */
 public class MapRed {
 	//input: all user objects from file
 	//output (top_tag),"UserID{tag1=.40, tag2=1.0, tag3=.008, ..."
