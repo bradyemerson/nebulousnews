@@ -9,7 +9,6 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.ObjectWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
@@ -23,6 +22,7 @@ import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.apache.hadoop.mapred.TextOutputFormat;
 
+import com.nebulousnews.io.ObjectSerializableWritable;
 import com.nebulousnews.users.User;
 
 /*
@@ -33,8 +33,8 @@ public class MapRed {
 	//input: all user objects from file
 	//output (top_tag),"UserID{tag1=.40, tag2=1.0, tag3=.008, ..."
 	public static class Map extends MapReduceBase implements 
-			Mapper<LongWritable, ObjectWritable, Text, Text> {
-		public void map(LongWritable key, ObjectWritable value, OutputCollector<Text, Text> 
+			Mapper<LongWritable, ObjectSerializableWritable, Text, ObjectSerializableWritable> {
+		public void map(LongWritable key, ObjectSerializableWritable value, OutputCollector<Text, ObjectSerializableWritable> 
 				output, Reporter reporter) throws IOException {
 			User user = (User)value.get();
 			String greatest_key = "";
@@ -49,28 +49,32 @@ public class MapRed {
 			for(String map_key: tags.keySet() ){
 				normalized_tags.put(map_key, tags.get(map_key)/greatest_tag);
 			}
-			output.collect(new Text(user.getUID()), new Text( normalized_tags.toString()));
+			user.setNormalTags(normalized_tags);
+			output.collect(new Text(user.getUID()), new ObjectSerializableWritable(user));
 		}
 
 	}
+	//I don't really need a reduce for this...
 	public static class Reduce extends MapReduceBase implements 
-			Reducer<Text, Text, Text, Text> {
-		 public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, Text> 
+			Reducer<Text, ObjectSerializableWritable, Text, ObjectSerializableWritable> {
+		 public void reduce(Text key, Iterator<ObjectSerializableWritable > values, OutputCollector<Text, ObjectSerializableWritable> 
 		 		output, Reporter reporter) throws IOException {
-			 String all_tags = "";
+			 output.collect(new Text(key), values.next());
+			 /*User user;
 			 while( values.hasNext()){
-				 String tagset = values.next().toString();
-				 all_tags += tagset.substring(tagset.length()-2);				 
-			 }
-			 all_tags += "}";
-			output.collect(key, new Text(all_tags)); 
+				 User next = (User)values.next().get();
+				 if(!user.equals(next)){
+					 user = next;
+				 }
+			 }*/
+			//output.collect(new Text(user.getUID()),new ObjectSerializableWritable(user)); 
 		 }
 	}
 	
 	 public static void main(String[] args) throws Exception {
 		JobConf conf = new JobConf(WordCount.class);
 		conf.setJobName("nebulous news");       
-		conf.setOutputKeyClass(Text.class);
+		conf.setOutputKeyClass(LongWritable.class);
 		conf.setOutputValueClass(Text.class);   
 		conf.setMapperClass(Map.class);
 		conf.setCombinerClass(Reduce.class);

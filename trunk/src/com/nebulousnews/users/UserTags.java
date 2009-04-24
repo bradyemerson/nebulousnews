@@ -6,6 +6,7 @@ import java.util.Map;
 public class UserTags {
 
 	private Map<String, Double> tags = new HashMap<String, Double>();
+	private Map<String, Double> norm_tags;
 	private Double increment = 1.0;
 	private Double decrement = -1.0;
 	
@@ -14,6 +15,14 @@ public class UserTags {
 	}
 	public UserTags(String tag, Double rating){
 		this.tags.put(tag,rating);
+	}
+	
+	public void setNormalTags(Map<String, Double> new_tags){
+		this.norm_tags = new_tags;
+	}
+	
+	public Map<String, Double> getNormalTags(){
+		return this.norm_tags;
 	}
 	
 	public void addUserTags(String tag, Double rating){
