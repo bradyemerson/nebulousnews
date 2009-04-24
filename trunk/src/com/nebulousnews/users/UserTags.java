@@ -17,7 +17,11 @@ public class UserTags {
 	}
 	
 	public void addUserTags(String tag, Double rating){
-		this.tags.put(tag, rating);
+		if(this.tags.get(tag)==null){
+			this.tags.put(tag, rating);
+		} else {
+			this.tags.put(tag, this.tags.get(tag) + rating);
+		}
 	}
 	
 	public void updateUserTagMeanRating(String tag, Double rating){

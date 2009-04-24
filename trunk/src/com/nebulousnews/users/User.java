@@ -1,7 +1,13 @@
 package com.nebulousnews.users;
 
-public class User extends UserTags{
+import java.io.Serializable;
 
+public class User extends UserTags implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String firstName, lastName, UID, password;
 	
 	public User(){
