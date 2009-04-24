@@ -14,6 +14,7 @@ import java.util.Scanner;
 
 import com.clearforest.calais.full.Entity;
 import com.nebulousnews.feed.Article;
+import com.nebulousnews.io.ObjectSerializableWritable;
 import com.nebulousnews.users.User;
 /*
  * @author Jason
@@ -87,7 +88,7 @@ public class UserGenerator {
 			FileOutputStream fileout = new FileOutputStream("user_data");
 			ObjectOutputStream userout = new ObjectOutputStream(fileout);
 			for(User user: users){
-				userout.writeObject(user);	
+				userout.writeObject(new ObjectSerializableWritable(user));	
 			}
 			//then write the users to file
 		} catch (FileNotFoundException e) {
