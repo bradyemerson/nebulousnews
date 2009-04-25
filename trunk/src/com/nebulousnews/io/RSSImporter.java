@@ -44,6 +44,7 @@ public class RSSImporter implements Importer {
 					enclosures.put("html", item.getElementValue("media:text"));
 				}
 				String[] mediaContentValues = item.getElementValues("media:content", new String[] {});
+				@SuppressWarnings("unused")
 				String[] mediaContentAttributes = item.getAttributeValues("media:content", new String[] {});
 				if (mediaContentValues != null && mediaContentValues.length > 0) {
 					
