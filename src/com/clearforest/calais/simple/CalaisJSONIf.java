@@ -66,7 +66,9 @@ public class CalaisJSONIf implements ErrorHandler {
 	private boolean		 			m_isLastErr		= false;
 	private String		 			m_lastErr		= null;
 	private int						m_level			= 0;
+	@SuppressWarnings("unused")
 	private String					m_l0Tag			= "";
+	@SuppressWarnings("unused")
 	private String					m_l1Tag			= "";
 	private String					m_l2Tag			= "";
 	private String					m_l3Tag			= "";

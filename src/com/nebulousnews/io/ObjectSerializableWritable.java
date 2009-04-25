@@ -37,23 +37,30 @@ import org.apache.hadoop.io.WritableFactories;
 /** A polymorphic Writable that writes an instance with it's class name.
  * Handles arrays, strings and primitive types without a Writable wrapper.
  */
+@SuppressWarnings("deprecation")
 public class ObjectSerializableWritable implements Writable, Configurable, Serializable {
 
   /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+@SuppressWarnings("unchecked")
 private Class declaredClass;
   private Object instance;
   private Configuration conf;
 
   public ObjectSerializableWritable() {}
   
+  public ObjectSerializableWritable(ObjectWritable that){
+	  this.set(that);
+  }
+  
   public ObjectSerializableWritable(Object instance) {
     set(instance);
   }
 
-  public ObjectSerializableWritable(Class declaredClass, Object instance) {
+  @SuppressWarnings("unchecked")
+public ObjectSerializableWritable(Class declaredClass, Object instance) {
     this.declaredClass = declaredClass;
     this.instance = instance;
   }
@@ -62,7 +69,8 @@ private Class declaredClass;
   public Object get() { return instance; }
   
   /** Return the class this is meant to be. */
-  public Class getDeclaredClass() { return declaredClass; }
+  @SuppressWarnings("unchecked")
+public Class getDeclaredClass() { return declaredClass; }
   
   /** Reset the instance. */
   public void set(Object instance) {
@@ -99,7 +107,8 @@ public void write(DataOutput out) throws IOException {
   private static class NullInstance extends Configured implements Writable {
     private Class<?> declaredClass;
     public NullInstance() { super(null); }
-    public NullInstance(Class declaredClass, Configuration conf) {
+    @SuppressWarnings("unchecked")
+	public NullInstance(Class declaredClass, Configuration conf) {
       super(conf);
       this.declaredClass = declaredClass;
     }
@@ -121,7 +130,8 @@ public void write(DataOutput out) throws IOException {
 
   /** Write a {@link Writable}, {@link String}, primitive type, or an array of
    * the preceding. */
-  public static void writeObject(DataOutput out, Object instance,
+  @SuppressWarnings("unchecked")
+public static void writeObject(DataOutput out, Object instance,
                                  Class declaredClass, 
                                  Configuration conf) throws IOException {
 
