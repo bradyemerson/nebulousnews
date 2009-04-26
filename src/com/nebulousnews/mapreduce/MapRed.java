@@ -5,13 +5,11 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.apache.hadoop.examples.WordCount;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.ObjectWritable;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
 import org.apache.hadoop.mapred.JobClient;
@@ -35,8 +33,8 @@ public class MapRed {
 	//output (top_tag),"UserID{tag1=.40, tag2=1.0, tag3=.008, ..."
 	private static JobConf passer;
 	public static class Map extends MapReduceBase implements 
-			Mapper<LongWritable, ObjectWritable, LongWritable, ObjectWritable> {
-		public void map(LongWritable key, ObjectWritable value, OutputCollector<LongWritable, ObjectWritable> 
+			Mapper<LongWritable, ObjectSerializableWritable, LongWritable, ObjectSerializableWritable> {
+		public void map(LongWritable key, ObjectSerializableWritable value, OutputCollector<LongWritable, ObjectSerializableWritable> 
 				output, Reporter reporter) throws IOException {
 			User user = (User)value.get();
 			String greatest_key = "";
@@ -52,15 +50,15 @@ public class MapRed {
 				normalized_tags.put(map_key, tags.get(map_key)/greatest_tag);
 			}
 			user.setNormalTags(normalized_tags);
-			output.collect(new LongWritable(0), new ObjectWritable(user));
+			output.collect(new LongWritable(0), new ObjectSerializableWritable(user));
 		}
 
 	}
 	//I don't really need a reduce for this...
 	//but I'll use one to write all my objects to file
 	public static class Reduce extends MapReduceBase implements 
-			Reducer<LongWritable, ObjectWritable, LongWritable, ObjectWritable> {
-		 public void reduce(LongWritable key, Iterator<ObjectWritable > values, OutputCollector<LongWritable, ObjectWritable> 
+			Reducer<LongWritable, ObjectSerializableWritable, LongWritable, ObjectSerializableWritable> {
+		 public void reduce(LongWritable key, Iterator<ObjectSerializableWritable > values, OutputCollector<LongWritable, ObjectSerializableWritable> 
 		 		output, Reporter reporter) throws IOException {
 				FileSystem hdfs = FileSystem.get(passer);
 				Path path = new Path("/users/jschlesi/output_users");
@@ -77,15 +75,15 @@ public class MapRed {
 					 user = next;
 				 }
 			 }*/
-			//output.collect(new Text(user.getUID()),new ObjectWritable(user)); 
+			//output.collect(new Text(user.getUID()),new ObjectSerializableWritable(user)); 
 		 }
 	}
 	
 	 public static void main(String[] args) throws Exception {
-		JobConf conf = new JobConf(WordCount.class);
+		JobConf conf = new JobConf(MapRed.class);
 		conf.setJobName("nebulous news");       
 		conf.setOutputKeyClass(LongWritable.class);
-		conf.setOutputValueClass(ObjectWritable.class);   
+		conf.setOutputValueClass(ObjectSerializableWritable.class);   
 		conf.setMapperClass(Map.class);
 		//conf.setCombinerClass(Reduce.class);
 		//conf.setReducerClass(Reduce.class); 

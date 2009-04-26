@@ -9,14 +9,15 @@ import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.ObjectWritable;
 import org.apache.hadoop.mapred.FileSplit;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RecordReader;
 
-public class ObjectRecordReader implements RecordReader<LongWritable, ObjectWritable>{
+import com.nebulousnews.io.ObjectSerializableWritable;
+
+public class ObjectRecordReader implements RecordReader<LongWritable, ObjectSerializableWritable>{
 	private String			_filename;
-	private ArrayList<ObjectWritable>   _objects;
+	private ArrayList<ObjectSerializableWritable>   _objects;
 	private long             _currentObject;
 	@SuppressWarnings("unused")
 	private JobConf			_conf;	
@@ -37,10 +38,10 @@ public class ObjectRecordReader implements RecordReader<LongWritable, ObjectWrit
 		FSDataInputStream input = hdfs.open(path);
 		ObjectInputStream objectStream = new ObjectInputStream(input);
 		try {
-			ObjectWritable object = (ObjectWritable) objectStream.readObject();
+			ObjectSerializableWritable object = (ObjectSerializableWritable) objectStream.readObject();
 			while(object!=null){
 				_objects.add(object);
-				object = (ObjectWritable) objectStream.readObject();
+				object = (ObjectSerializableWritable) objectStream.readObject();
 			}
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -71,9 +72,9 @@ public class ObjectRecordReader implements RecordReader<LongWritable, ObjectWrit
 	}
 
 	@Override
-	public ObjectWritable createValue() {
+	public ObjectSerializableWritable createValue() {
 		// TODO Auto-generated method stub
-		return new ObjectWritable();
+		return new ObjectSerializableWritable();
 	}
 
 	@Override
@@ -89,10 +90,10 @@ public class ObjectRecordReader implements RecordReader<LongWritable, ObjectWrit
 	}
 
 	@Override
-	public boolean next(LongWritable position, ObjectWritable object)
+	public boolean next(LongWritable position, ObjectSerializableWritable object)
 			throws IOException {
 		if (_objects.size()-1<=_currentObject){
-			ObjectWritable obj = _objects.get((int) _currentObject);
+			ObjectSerializableWritable obj = _objects.get((int) _currentObject);
 			_currentObject ++;
 			position.set(_currentObject);
 			object.set(obj);
