@@ -1,5 +1,6 @@
 package com.nebulousnews.mapreduce;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
@@ -16,11 +17,11 @@ import org.apache.hadoop.mapred.RecordReader;
 import com.nebulousnews.io.ObjectSerializableWritable;
 
 public class ObjectRecordReader implements RecordReader<LongWritable, ObjectSerializableWritable>{
-	private String			_filename;
+	private String									_filename;
 	private ArrayList<ObjectSerializableWritable>   _objects;
-	private long             _currentObject;
+	private long         						    _currentObject;
 	@SuppressWarnings("unused")
-	private JobConf			_conf;	
+	private JobConf									_conf;	
 	public ObjectRecordReader(JobConf conf, FileSplit split) throws IOException{
 		//set the configuration
 		_conf = conf;
@@ -37,6 +38,7 @@ public class ObjectRecordReader implements RecordReader<LongWritable, ObjectSeri
 		Path path = new Path(_filename);
 		FSDataInputStream input = hdfs.open(path);
 		ObjectInputStream objectStream = new ObjectInputStream(input);
+		_objects = new ArrayList<ObjectSerializableWritable>();
 		try {
 			ObjectSerializableWritable object = (ObjectSerializableWritable) objectStream.readObject();
 			while(object!=null){
@@ -46,6 +48,8 @@ public class ObjectRecordReader implements RecordReader<LongWritable, ObjectSeri
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (EOFException e) {
+			//you're fine, move on
 		}
 		/*
 		// directory

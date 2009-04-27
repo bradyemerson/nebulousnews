@@ -65,8 +65,11 @@ public class MapRed {
 				FSDataOutputStream oute = hdfs.append(path);
 				ObjectOutputStream objectStream = new ObjectOutputStream(oute);
 				while(values.hasNext()){
-					objectStream.writeObject(new ObjectSerializableWritable(values.next()));
+					ObjectSerializableWritable next = new ObjectSerializableWritable(values.next());
+					objectStream.writeObject(next);
 				}
+				objectStream.close();
+				oute.close();
 			 /*output.collect(key, values.next());
 			 User user;
 			 while( values.hasNext()){
