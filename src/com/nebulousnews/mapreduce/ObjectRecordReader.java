@@ -50,6 +50,7 @@ public class ObjectRecordReader implements RecordReader<LongWritable, ObjectSeri
 			e.printStackTrace();
 		} catch (EOFException e) {
 			//you're fine, move on
+			System.err.println(e.toString());
 		}
 		/*
 		// directory
