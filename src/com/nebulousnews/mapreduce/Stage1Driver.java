@@ -12,6 +12,7 @@ import org.apache.hadoop.io.ObjectWritable;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
 import org.apache.hadoop.mapred.InputFormat;
+import org.apache.hadoop.mapred.OutputFormat;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.util.Tool;
@@ -32,10 +33,10 @@ public class Stage1Driver extends Configured implements Tool {
 		conf.setReducerClass(Stage1Reducer.class);
 		
 		conf.setInputFormat(InputFormat.class);
+		conf.setOutputFormat(OutputFormat.class);
 		
-		
-		FileInputFormat.setInputPaths(conf, "/mike.ser");
-		FileOutputFormat.setOutputPath(conf, new Path("/neboutput"));
+		FileInputFormat.setInputPaths(conf, "/user/mjcervan/mike.ser");
+		FileOutputFormat.setOutputPath(conf, new Path("/user/mjcervan/neboutput"));
 		
 		JobClient.runJob(conf);
 		return 0;
