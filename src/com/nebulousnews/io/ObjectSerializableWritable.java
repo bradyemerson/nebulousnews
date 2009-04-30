@@ -21,6 +21,8 @@ package com.nebulousnews.io;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.HashMap;
@@ -180,7 +182,10 @@ public static void writeObject(DataOutput out, Object instance,
     } else if (Writable.class.isAssignableFrom(declaredClass)) { // Writable
       UTF8.writeString(out, instance.getClass().getName());
       ((Writable)instance).write(out);
-
+    //write serializable classes
+    }else if (Serializable.class.isAssignableFrom(declaredClass)){
+    	ObjectOutputStream output = new ObjectOutputStream((OutputStream)out);
+    	output.writeObject(instance);
     } else {
       throw new IOException("Can't write: "+instance+" as "+declaredClass);
     }
