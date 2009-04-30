@@ -11,14 +11,11 @@ public class User extends UserTags implements Serializable{
 	private String firstName, lastName, UID, password;
 	
 	public User(){
-		super();
-		this.firstName = "blank";
-		this.lastName = "blank";
-		this.UID = "blank";
-		this.password = "blank";
+		this("", "", "", "");
 	}
 	
 	public User(String firstName, String lastName, String UID, String password){
+		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.UID = UID;
@@ -26,6 +23,7 @@ public class User extends UserTags implements Serializable{
 	}
 	
 	public User(String firstName, String lastName, String UID, String password, String tag, Double rating){
+		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.UID = UID;
