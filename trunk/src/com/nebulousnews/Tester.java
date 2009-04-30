@@ -17,7 +17,7 @@ public class Tester {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) {
-		String path = "file:///C:/Documents%20and%20Settings/Brady/eclipse_workspace/Nebulous%20News/topnews%20sample.xml";
+		String path = "file:///C:/Documents%20and%20Settings/Brady/eclipse_workspace/Nebulous%20News/articles.xml";
 		RSSImporter importer = new RSSImporter(path);
 		importer.loadArticles();
 		Article[] articles = importer.getArticles();
@@ -31,7 +31,7 @@ public class Tester {
 		
 		try {
 			//C:\\Documents%20and%20Settings\\Brady\\eclipse_workspace\\Nebulous%20News\\
-			FileOutputStream underlyingStream = new FileOutputStream("articles.news");
+			FileOutputStream underlyingStream = new FileOutputStream("articles.big.news");
 			ObjectOutputStream serializer = new ObjectOutputStream(underlyingStream);
 			serializer.writeObject(articles);
 		} catch (FileNotFoundException e) {

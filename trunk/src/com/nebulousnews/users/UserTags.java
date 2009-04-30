@@ -1,20 +1,25 @@
 package com.nebulousnews.users;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+
+import com.clearforest.calais.full.Entity;
+import com.nebulousnews.feed.Article;
 
 public class UserTags {
 
-	private Map<String, Double> tags = new HashMap<String, Double>();
+	private Map<String, Double> tags;
 	private Map<String, Double> norm_tags;
 	private Double increment = 1.0;
 	private Double decrement = -1.0;
 	
 	public UserTags(){
-		this.tags.put("blank",0.0);
+		tags = new HashMap<String, Double>();
 	}
 	public UserTags(String tag, Double rating){
-		this.tags.put(tag,rating);
+		addUserTags(tag, rating);
 	}
 	
 	public void setNormalTags(Map<String, Double> new_tags){
@@ -26,6 +31,7 @@ public class UserTags {
 	}
 	
 	public void addUserTags(String tag, Double rating){
+		tag = tag.toUpperCase();
 		if(this.tags.get(tag)==null){
 			this.tags.put(tag, rating);
 		} else {
@@ -61,6 +67,24 @@ public class UserTags {
 	
 	public Map<String, Double> getUserTags(){
 		return this.tags;
+	}
+	
+	public double getArticleRanking(Article article) {
+		Iterator<ArrayList<Entity>> tagsItr = article.getTags().getEntitiesList().iterator();
+		double ranking = 0;
+		while (tagsItr.hasNext()) {
+			ArrayList<Entity> entity = tagsItr.next();
+			if (entity.size() == 0) {
+				continue;
+			} else {
+				Entity temp = entity.get(0);
+				String name = temp.getName().toUpperCase();
+				if (this.tags.containsKey(name)) {
+					ranking += this.tags.get(name)*temp.getRelevance();
+				}
+			}
+		}
+		return ranking;
 	}
 	
 	public String toString(){
