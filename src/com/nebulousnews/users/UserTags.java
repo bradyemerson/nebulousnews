@@ -1,5 +1,6 @@
 package com.nebulousnews.users;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,8 +9,12 @@ import java.util.Map;
 import com.clearforest.calais.full.Entity;
 import com.nebulousnews.feed.Article;
 
-public class UserTags {
+public class UserTags implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Map<String, Double> tags;
 	private Map<String, Double> norm_tags;
 	private Double increment = 1.0;

@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,13 +14,12 @@ import java.util.Scanner;
 
 import com.clearforest.calais.full.Entity;
 import com.nebulousnews.feed.Article;
-import com.nebulousnews.io.ObjectSerializableWritable;
 import com.nebulousnews.users.User;
 /*
  * @author Jason
  * 
  */
-public class UserGenerator {
+public class UserTextGenerator {
 	public static void main(String[] abs){
 		try {
 			FileInputStream underlyingStream = new FileInputStream("articles.big.news");
@@ -54,16 +53,16 @@ public class UserGenerator {
 				//System.out.println(user.getUID() + " : " + users_tags.get(user.getUID()).toString() );
 			}
 			for (User user: users){
-				//System.out.print(user.getUID());
+				System.out.print(user.getUID());
 				user = loadArticles(articles1,user,users_tags);
 				user = loadArticles(articles2,user,users_tags);
-				//System.out.println(": " + user.getUserTags().toString());
+				System.out.println(": " + user.getUserTags().toString());
 			}
-			FileOutputStream fileout = new FileOutputStream("user_data");
-			ObjectOutputStream userout = new ObjectOutputStream(fileout);
+			FileOutputStream fileout = new FileOutputStream("user_text");
+			//ObjectOutputStream userout = new ObjectOutputStream(fileout);
+			PrintStream userout = new PrintStream(fileout);
 			for(User user: users){
-				System.out.println(user.toString());
-				userout.writeObject(user);	
+				userout.print(user.getUID()+user.getUserTags()+"\n");
 			}
 			//then write the users to file
 		} catch (FileNotFoundException e) {

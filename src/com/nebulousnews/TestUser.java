@@ -4,20 +4,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import com.nebulousnews.feed.Article;
 
-public class TestLoader {
+import com.nebulousnews.users.User;
 
-	/**
-	 * @param args
-	 */
+public class TestUser {
 	public static void main(String[] args) {
 		try {
-			FileInputStream underlyingStream = new FileInputStream("articles.big.news");
+			FileInputStream underlyingStream = new FileInputStream("user_data");
 			ObjectInputStream serializer = new ObjectInputStream(underlyingStream);
-			Article[] articles = (Article[]) serializer.readObject();
-			for (Article article: articles) {
-				System.out.println(article.getTitle());
+			while(true){
+				User a = (User)serializer.readObject();
+				System.out.println(a.toString());
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
