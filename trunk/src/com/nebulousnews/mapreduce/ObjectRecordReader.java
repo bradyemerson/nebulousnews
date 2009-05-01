@@ -40,18 +40,18 @@ public class ObjectRecordReader implements RecordReader<LongWritable, ObjectSeri
 		ObjectInputStream objectStream = new ObjectInputStream(input);
 		_objects = new ArrayList<ObjectSerializableWritable>();
 		try {
-			ObjectSerializableWritable object = (ObjectSerializableWritable) objectStream.readObject();
+			ObjectSerializableWritable object = new ObjectSerializableWritable(objectStream.readObject());
 			while(object!=null){
 				_objects.add(object);
-				object = (ObjectSerializableWritable) objectStream.readObject();
+				object = new ObjectSerializableWritable(objectStream.readObject());
 			}
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (EOFException e) {
+		} catch (IOException e) {
 			//you're fine, move on
-			System.err.println(e.toString());
-		}
+			e.printStackTrace();
+		} 
 		/*
 		// directory
 		String directory = UsulFilePath.directory( _filename );

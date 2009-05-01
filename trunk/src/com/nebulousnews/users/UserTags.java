@@ -1,5 +1,8 @@
 package com.nebulousnews.users;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,4 +98,5 @@ public class UserTags implements Serializable{
 	public String toString(){
 		return "User Tags: " + this.tags.toString() + " ";
 	}
+
 }
