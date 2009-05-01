@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.*;
+import org.apache.hadoop.fs.FilterFileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.io.LongWritable;
@@ -33,7 +34,7 @@ import com.nebulousnews.users.User;
 public class TextMapRed {
 	//input: all user objects from file
 	//output (top_tag),"UserID{tag1=.40, tag2=1.0, tag3=.008, ..."
-	public static JobConf _passer;
+	public static FileSystem hdfs;
 	public static class Map extends MapReduceBase implements 
 			Mapper<LongWritable, Text, LongWritable, ObjectSerializableWritable> {
 		public void map(LongWritable key, Text value, OutputCollector<LongWritable, ObjectSerializableWritable> 
@@ -75,22 +76,26 @@ public class TextMapRed {
 	//but I'll use one to write all my objects to file
 	public static class Reduce extends MapReduceBase implements 
 			Reducer<LongWritable, ObjectSerializableWritable, LongWritable, ObjectSerializableWritable> {
+		 
 		 public void reduce(LongWritable key, Iterator<ObjectSerializableWritable > values, OutputCollector<LongWritable, ObjectSerializableWritable> 
 		 		output, Reporter reporter) throws IOException {
-				/*FileSystem hdfs = FileSystem.get(_passer);
-			    
-				Path path = new Path("/users/jschlesi/output_users");
-				FSDataOutputStream oute = hdfs.append(path);
-				ObjectOutputStream objectStream = new ObjectOutputStream(oute);
-				while(values.hasNext()){
-					User next = (User)values.next().get();
-					objectStream.writeObject(next);
+			    Path path = new Path("/users/jschlesi/output_users");
+			    if (hdfs!=null){
+					FSDataOutputStream oute = hdfs.append(path);
+					ObjectOutputStream objectStream = new ObjectOutputStream(oute);
+					while(values.hasNext()){
+						User next = (User)values.next().get();
+						objectStream.writeObject(next);
+					}
+					objectStream.close();
+					oute.close();
+				} else {
+				///**/
+					while( values.hasNext()){
+						User user = (User) values.next().get();
+						output.collect(key, new ObjectSerializableWritable(user.getUID() + user.getNormalTags()));
+			    	}
 				}
-				objectStream.close();
-				oute.close();*/
-			 while( values.hasNext()){
-				 output.collect(key, values.next());
-			 }
 			//output.collect(new Text(user.getUID()),new ObjectSerializableWritable(user)); 
 		 }
 	}
@@ -113,7 +118,7 @@ public class TextMapRed {
 			dfs.delete(output_file,true);
 		}
 		FileOutputFormat.setOutputPath(conf, output_file);    
-		_passer = conf;
+		hdfs = dfs;
 		JobClient.runJob(conf);
 	 }
 

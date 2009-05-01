@@ -87,8 +87,8 @@ public class UserTags implements Serializable{
 			} else {
 				Entity temp = entity.get(0);
 				String name = temp.getName().toUpperCase();
-				if (this.tags.containsKey(name)) {
-					ranking += this.tags.get(name)*temp.getRelevance();
+				if (this.norm_tags.containsKey(name)) {
+					ranking += this.norm_tags.get(name)*temp.getRelevance();
 				}
 			}
 		}

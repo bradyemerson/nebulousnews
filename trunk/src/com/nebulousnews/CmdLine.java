@@ -14,6 +14,7 @@ import java.util.*;
 
 import com.clearforest.calais.full.Entity;
 import com.nebulousnews.feed.Article;
+import com.nebulousnews.io.ObjectSerializableWritable;
 import com.nebulousnews.users.User;
 
 /**
@@ -64,14 +65,23 @@ public class CmdLine {
 		}*/
 		
 		try {
-			Scanner user_profiles = new Scanner(new File("users.profiles"));
+			//Scanner user_profiles = new Scanner(new File("users.profiles"));
 			//users.profiles is just a space delimited file that gives USER IDs, and all the tags they will automatically vote up on
 			//UID|tagid|tagid|tagid|...
 			//nothing fancy
 			//users_tags (tagid,(userid,userid,...))
-			HashMap<String,ArrayList<String>> users_tags = new HashMap<String,ArrayList<String>>(); 
+			//HashMap<String,ArrayList<String>> users_tags = new HashMap<String,ArrayList<String>>(); 
 			ArrayList<User> usersHolder = new ArrayList<User>();
-			while (user_profiles.hasNextLine()){
+			try {
+				FileInputStream underlyingStream = new FileInputStream("user_normalized_data");
+				ObjectInputStream serializer = new ObjectInputStream(underlyingStream);
+				while(true){
+					usersHolder.add((User)serializer.readObject());
+				}
+			} catch (Exception e) { 
+				//this is an awful way to do this
+			}
+			/*while (user_profiles.hasNextLine()){
 				Scanner user_line = new Scanner(user_profiles.nextLine());
 				user_line.useDelimiter("\\|");
 				User user = new User();
@@ -81,14 +91,14 @@ public class CmdLine {
 					user.addUserTags(next, 1.0);
 				}
 				usersHolder.add(user);
-			}
+			}*/
 			users = usersHolder.toArray(new User[usersHolder.size()]);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		int userNumber = 1;
-		System.out.println(users[userNumber].getUserTags());
+		int userNumber = 72;
+		System.out.println(users[userNumber].getNormalTags());
 		int articleNumber = 0;
 		
 		TreeSet<UserArticle> userArticles = new TreeSet<UserArticle>();
