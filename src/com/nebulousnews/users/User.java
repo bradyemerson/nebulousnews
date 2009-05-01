@@ -2,7 +2,7 @@ package com.nebulousnews.users;
 
 import java.io.Serializable;
 
-public class User extends UserTags implements Serializable{
+public class User extends UserTags implements Serializable{//let's hope it doesn't come to that, Writable{
 
 	/**
 	 * 
@@ -74,4 +74,17 @@ public class User extends UserTags implements Serializable{
 		
 		return sb.toString();
 	}
+	/*
+	@Override
+	public void readFields(DataInput arg0) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void write(DataOutput arg0) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+	*/
 }

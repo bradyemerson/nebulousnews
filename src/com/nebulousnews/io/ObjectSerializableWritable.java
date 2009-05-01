@@ -21,6 +21,8 @@ package com.nebulousnews.io;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -251,7 +253,15 @@ public static void writeObject(DataOutput out, Object instance,
       instance = UTF8.readString(in);
     } else if (declaredClass.isEnum()) {         // enum
       instance = Enum.valueOf((Class<? extends Enum>) declaredClass, UTF8.readString(in));
-    } else {                                      // Writable
+    } else if (Serializable.class.isAssignableFrom(declaredClass)) {                  //Serializable
+    	ObjectInputStream input = new ObjectInputStream((InputStream)in);
+    	try {
+			instance = input.readObject();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			throw new IllegalArgumentException("ClassNotFound: " + declaredClass);
+		}
+    } else {                                      // Writable (or fail, this is dangerous)
       Class instanceClass = null;
       String str = "";
       try {
