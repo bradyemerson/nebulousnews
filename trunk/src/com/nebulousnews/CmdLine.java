@@ -97,8 +97,10 @@ public class CmdLine {
 			e.printStackTrace();
 		}
 		
+		System.out.println("Init took "+(System.currentTimeMillis()-start)+"ms.");
+		
 		int userNumber = 72;
-		System.out.println(users[userNumber].getNormalTags());
+		System.out.println("Users tags: "+users[userNumber].getNormalTags());
 		int articleNumber = 0;
 		
 		TreeSet<UserArticle> userArticles = new TreeSet<UserArticle>();
@@ -115,7 +117,7 @@ public class CmdLine {
 		}
 		
 		int i = 0;
-		System.out.println(userArticles.size());
+		System.out.println("Number of articles: "+userArticles.size());
 		for(UserArticle article : userArticles) {
 			System.out.println(article.getTitle()+": "+article.getRanking());
 			i++;
@@ -124,7 +126,7 @@ public class CmdLine {
 			}
 		}
 		
-		System.out.println("Process took: "+(System.currentTimeMillis()-start)+"ms");
+		System.out.println("Recommendation Process took: "+(System.currentTimeMillis()-start)+"ms");
 	}
 }
 
