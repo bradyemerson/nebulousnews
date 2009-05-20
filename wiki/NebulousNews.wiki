@@ -8,8 +8,8 @@ Nebulous News is an open source framework that sits on [http://hadoop.apache.org
 
 = Timeline = 
 
-May 10, 2009 - Proof of Concept
-May 21, 2009 - Project Outline
+ * May 10, 2009 - Proof of Concept
+ * May 21, 2009 - Project Outline
 
 = Features = 
 
