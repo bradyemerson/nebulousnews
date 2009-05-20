@@ -1,0 +1,16 @@
+#summary One-sentence summary of this page.
+#labels Featured,Phase-Requirements,Phase-Design
+Welcome to the Nebulous News project wiki.  This wiki is designed to be the main place where users and developers can get together and help document and learn about Nebulous News.
+= Introduction =
+
+Nebulous News is an open source framework that sits on [http://hadoop.apache.org/core/ Hadoop] designed to organize news articles into tags, and then recommend them out to users.  
+
+
+= Timeline = 
+
+May 10, 2009 - Proof of Concept
+May 21, 2009 - Project Outline
+
+= Features = 
+
+Current implemented features are very limited.
