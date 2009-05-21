@@ -14,3 +14,7 @@ Nebulous News is an open source framework that sits on [http://hadoop.apache.org
 = Features = 
 
 Current implemented features are very limited.
+
+= Data Feeds Packages =
+
+The Data Feeds package will consist of an abstract class that can be used to create other classes that will standardized the way data is collected and then introduced into framework for further processing.  The components that will comprise of the initial Data Feeds package are displayed below.
