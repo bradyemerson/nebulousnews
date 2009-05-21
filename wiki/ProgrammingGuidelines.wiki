@@ -1,0 +1,13 @@
+#summary Programming guidelines used in the development of this project.
+
+= Programming Guidelines =
+
+The purpose of this page is to set the general guidelines on the syntax and naming conventions that will be used in this project along with the coding structure.  Any modifications to this document must be approved by a quorum of the lead developers on this project.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
