@@ -19,7 +19,7 @@ abstract public class StandardSourceData {
 		this.dataType = dataType;
 	}
 
-	abstract public <T> setData(T data){
+	abstract public setData(T data){
 		
 	}
 	
@@ -27,7 +27,7 @@ abstract public class StandardSourceData {
 		
 	}
 	
-	abstract public <T> setMetaData(T metaData){
+	abstract public setMetaData(T metaData){
 		
 	}
 	
