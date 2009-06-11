@@ -3,13 +3,19 @@ package com.nebulousnews.io;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 
+import org.apache.hadoop.io.DataOutputBuffer;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableUtils;
 
-
-abstract public class StandardSourceData implements Writable{
+/**
+ * 
+ * @author Jason Schlesinger
+ *
+ */
+public class StandardSourceData implements Writable{
 	private String uID;
 	private String dataType;
 	private HashMap<String,String> metadata;
@@ -86,10 +92,13 @@ abstract public class StandardSourceData implements Writable{
 	 * @see WritableUtils
 	 */
 	public void write(DataOutput out) throws IOException{
-		WritableUtils.writeString(out,"STD[|"+uID+"|"+dataType+"|"+data.length+"|");
-		WritableUtils.writeCompressedByteArray(out,data);
-		WritableUtils.writeCompressedString(out,"|" + metadata.toString());
-		WritableUtils.writeString(out,"]\n");
+		DataOutputBuffer buffer = new DataOutputBuffer();
+		WritableUtils.writeString(buffer,"STD[|"+uID+"|"+dataType+"|"+data.length+"|");
+		WritableUtils.writeCompressedByteArray(buffer,data);
+		WritableUtils.writeCompressedString(buffer,"|" + metadata.toString());
+		WritableUtils.writeString(buffer,"]\n");
+		WritableUtils.writeVInt(out,buffer.getLength());
+		buffer.writeTo((OutputStream) out);
 		
 	}
 	
@@ -99,6 +108,9 @@ abstract public class StandardSourceData implements Writable{
 	 */
 	public void readFields(DataInput in) throws IOException {
 		// read in all the data
+		@SuppressWarnings("unused")
+		int recordLength = WritableUtils.readVInt(in);
+		// is it better if I read in the whole record before breaking it up?
 		String intro = WritableUtils.readString(in);
 		byte[] dataTentative = WritableUtils.readCompressedByteArray(in);
 		String metaData = WritableUtils.readCompressedString(in);
@@ -168,7 +180,9 @@ abstract public class StandardSourceData implements Writable{
 	 * 
 	 * @param dataIn The data that was collected, after it has been cleaned and sanitized.
 	 */
-	abstract public void setData(byte[] dataIn);
+	public void setData(byte[] dataIn){
+		data = dataIn;
+	}
 	
 	/**
 	 * Set the metadata about the data that was collected.  Suggestions are 
@@ -177,7 +191,14 @@ abstract public class StandardSourceData implements Writable{
 	 * well as enriching the output later on, so any data that can be collected at this point  
 	 * @param metaData
 	 */
-	abstract public void setMetaData(HashMap<String,String> metaData);
+	public void setMetaData(HashMap<String,String> metaData){
+		metadata = metaData;
+	}
 	
-	
+	/**
+	 * Returns STD[data|metadata]
+	 */
+	public String toString(){
+		return "STD" + data + "|" + metadata.toString();
+	}
 }
