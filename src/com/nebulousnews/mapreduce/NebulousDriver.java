@@ -28,16 +28,6 @@ import com.nebulousnews.io.StandardSourceData;
  *
  */
 public class NebulousDriver {
-	public static class Map extends MapReduceBase implements 
-	Mapper<LongWritable, StandardSourceData, LongWritable, Text> {
-
-		public void map(LongWritable key, StandardSourceData value,
-				OutputCollector<LongWritable, Text> output,
-				Reporter reporter) throws IOException {
-			output.collect(key,new Text(value.toString()));			
-		}
-		
-	}
 	
 	public static class Reduce extends MapReduceBase implements 
 	Reducer<LongWritable, Text, LongWritable, Text>{
@@ -62,14 +52,18 @@ public class NebulousDriver {
 		conf.setJobName("NebulousNews");       
 		conf.setOutputKeyClass(LongWritable.class);
 		conf.setOutputValueClass(Text.class);   
-		conf.setMapperClass(Map.class);
+		conf.setMapperClass(TagMapper.class);
 		//conf.setCombinerClass(Reduce.class);
+		//FIXME: DEBUG START
+		//conf.set("mapred.job.tracker","local");
+		//conf.set("fs.default.name","local");
+		//FIXME: DEBUG END
 		conf.setReducerClass(Reduce.class); 
 		conf.setInputFormat(StandardInputFormat.class);
 		conf.setOutputFormat(TextOutputFormat.class);    
-		FileInputFormat.setInputPaths(conf, new Path(args[0]));
+		FileInputFormat.setInputPaths(conf, new Path("/user/training/sourceDataSample"));
 		FileSystem dfs = DistributedFileSystem.get(conf);
-		String filename = "normalized_users";
+		String filename = "output_test";
 		Path output_file = new Path(filename);
 		if(dfs.exists(output_file)){
 			dfs.delete(output_file,true);

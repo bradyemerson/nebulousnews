@@ -1,8 +1,9 @@
 package com.nebulousnews.io;
 
-import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -14,17 +15,12 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RecordReader;
 
 public class StandardRecordReader implements RecordReader<LongWritable, StandardSourceData>{
-	private long start;
-	private long end;
 	private long pos;
 	private DataInputStream in;
 	
 	
 	public StandardRecordReader(JobConf conf, FileSplit split){
 		pos = 0;
-		start = split.getStart();
-		end = start + split.getLength();
-		
 		try {
 			FileSystem fs = FileSystem.get(conf);
 			FSDataInputStream fileIn = fs.open(split.getPath());
@@ -87,24 +83,21 @@ public class StandardRecordReader implements RecordReader<LongWritable, Standard
 	public boolean next(LongWritable key, StandardSourceData value)
 			throws IOException {
 		key.set(pos);
-		int verify;
-		byte[] input;
-		BufferedInputStream inputStream;
+		//int verify;
+		//byte[] input;
+		DataInputStream inputStream;
+		//in.skip(pos);
 		try {
-			int length = WritableUtils.readVInt(in);
-			input = new byte[length];
-			pos += 4 + length; // it's 4 bytes/int... right?
-			//TODO: Verify that pos is advanced this much for every value
-			inputStream = new BufferedInputStream(in, length);
-			/*verify = in.read(input, 0, length);
-			if (verify != length){
-				return false;
-			}*/
+			inputStream = new DataInputStream(in);
 			value.readFields((DataInput)inputStream);
+		} catch (EOFException e) {
+			e.printStackTrace();
+			return false;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
+		pos += value.getLength();
 		return true;
 	}
 
