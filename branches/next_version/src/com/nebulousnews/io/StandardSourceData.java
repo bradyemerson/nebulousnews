@@ -1,9 +1,12 @@
 package com.nebulousnews.io;
 
 import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 import org.apache.hadoop.io.DataOutputBuffer;
@@ -20,6 +23,13 @@ public class StandardSourceData implements Writable{
 	private String dataType;
 	private HashMap<String,String> metadata;
 	private byte[] data;
+	private int _length;
+	
+	public StandardSourceData(){
+		uID = "";
+		dataType = "null";
+		metadata = new HashMap<String,String>();
+	}
 	
 	/**
 	 * Sets the UID to a random 10 character string.
@@ -99,7 +109,7 @@ public class StandardSourceData implements Writable{
 		WritableUtils.writeString(buffer,"]\n");
 		WritableUtils.writeVInt(out,buffer.getLength());
 		buffer.writeTo((OutputStream) out);
-		
+		_length = buffer.getLength();
 	}
 	
 	/**
@@ -107,19 +117,18 @@ public class StandardSourceData implements Writable{
 	 * Throws IOException if header or data size is incorrect.
 	 */
 	public void readFields(DataInput in) throws IOException {
-		// read in all the data
-		@SuppressWarnings("unused")
 		int recordLength = WritableUtils.readVInt(in);
-		// is it better if I read in the whole record before breaking it up?
 		String intro = WritableUtils.readString(in);
 		byte[] dataTentative = WritableUtils.readCompressedByteArray(in);
 		String metaData = WritableUtils.readCompressedString(in);
+		WritableUtils.readString(in);
 		// verify that it's a STD class element
 		if (!intro.substring(0, 3).equals("STD")){
 			throw new IOException("Incorrect type read");
 		}
+		
 		// break up the values in the intro
-		String[] introArray = intro.split("|");
+		String[] introArray = intro.split("[|]");
 		uID = introArray[1];
 		dataType = introArray[2];
 		int length = Integer.parseInt(introArray[3]);
@@ -130,10 +139,11 @@ public class StandardSourceData implements Writable{
 			data = dataTentative;
 		}
 		// remove the braces from the metadata, and return each key-value pair to the global variable 
-		for(String elementData : metaData.substring(1,metaData.length()-1).split("\" , \"")){
-			String[] dataElement = elementData.split("\"=\"");
+		for(String elementData : metaData.substring(2,metaData.length()-1).split(", ")){
+			String[] dataElement = elementData.split("=");
 			metadata.put(dataElement[0], dataElement[1]);
 		}
+		_length = recordLength + 5;
 	}
 	
 	/**
@@ -196,9 +206,24 @@ public class StandardSourceData implements Writable{
 	}
 	
 	/**
-	 * Returns STD[data|metadata]
+	 * If your data isn't in a String format (UTF8) to begin with, this won't work out so well for you... 
+	 * @return STD[UID|data|metadata]
 	 */
 	public String toString(){
-		return "STD" + data + "|" + metadata.toString();
+		try {
+			//let's assume that the data is a String...
+			return "STD:" + uID+ "|" + new String(data,"UTF8") + "|" + metadata.toString();
+		} catch (UnsupportedEncodingException e) {
+			//maybe that wasn't such a good idea...
+			return "STD:" + uID+ "|" + data + "|" + metadata.toString();
+		}
+	}
+	
+	/**
+	 * If you don't know why this is here, you don't need it.
+	 * @return the length of the object on disk
+	 */
+	public int getLength(){
+		return _length;
 	}
 }
