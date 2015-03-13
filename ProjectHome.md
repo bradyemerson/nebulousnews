@@ -1,0 +1,1 @@
+Nebulous News is an open source framework that sits on [Hadoop](http://hadoop.apache.org/core/) designed to organize news articles into tags, and then recommend them out to users.  Please visit the [wiki](NebulousNews.md) for the latest information on the project.
